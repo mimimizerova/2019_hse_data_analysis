@@ -1,0 +1,37 @@
+### 3.1
+
+df <- read.csv("https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/mimimizerova/hw3_Bayesian_inference/hw3_phoible.csv")
+prod(dnorm(df$consonants, mean = 22, sd = 6))
+
+### 3.2
+
+df1 <- read.csv("https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/letter_frequency.csv")
+data = subset(df1, letter == "m" | letter == "o" | letter == "s" | letter == "t")
+prod_data <- c(prod(data$French), prod(data$German), prod(data$Spanish), prod(data$Portuguese), prod(data$Esperanto), prod(data$Italian), prod(data$Turkish), prod(data$Swedish), prod(data$Polish), prod(data$Dutch), prod(data$Danish), prod(data$Icelandic), prod(data$Finnish))
+df2 <- data_frame(model = c(names(df1)[1:13]),
+           prior = 1/13,
+           likelihood = prod_data,
+           product = prior*likelihood,
+           posterior = product/sum(product))
+
+max(df2$posterior)
+
+### 3.3
+
+data_frame(x = seq(0, 1, length.out = 100),
+           density = dbeta(x = x, shape1 = 24, shape2 = 124)) %>% 
+  ggplot(aes(x, density))+
+  geom_point()+
+  geom_line()+
+  labs(title = "Бета распределение α = 24, β = 124")
+
+data_frame(x = rep(seq(0, 1, length.out = 100), 2),
+           density = c(dbeta(unique(x), shape1 = 24, shape2 = 124),
+                       dbeta(unique(x), shape1 = 24+37, shape2 = 124+77)),
+           type = rep(c("prior", "posterior"), each = 100),
+           dataset = rep(c("prior: 24, 124", "prior: 24, 124"), each = 100)) %>% 
+  ggplot(aes(x, density, color = type))+
+  geom_line()+
+  facet_wrap(~dataset)+
+  labs(title = "data = 24, 124")
+
