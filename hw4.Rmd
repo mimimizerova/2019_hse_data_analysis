@@ -1,0 +1,21 @@
+### 4.1
+
+df <- read.csv ('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/mimimizerova/hw4_Advanced_Bayesian/hw4_caretta.csv')
+
+mean_prior <- mean (df$vowel.dur, trim = 0.1)
+sd_prior <- sd (df$vowel.dur) 
+mean_data1 <- mean (df[df$speaker == 'brs02',]$vowel.dur)
+sd_data1 <- sd (df[df$speaker == 'brs02',]$vowel.dur)
+mean_post1 <- weighted.mean(c(mean_prior, mean_data1), c(1/sd_prior, 1/sd_data1))
+sd_post1 <-  (1/sd_prior + 1/sd_data1)^(-1)
+
+data.frame (mean_post = mean_post1, sd_post = sd_post1)
+
+### 4.2
+
+mean_data2 <-  mean (df[df$speaker == 'tt01',]$vowel.dur)
+sd_data2 <- sd (df[df$speaker == 'tt01',]$vowel.dur)
+mean_post2 <- weighted.mean(c(mean_prior, mean_data2), c(1/sd_prior, 1/sd_data2))
+sd_post2 <-  (1/sd_prior + 1/sd_data2)^(-1)
+
+data.frame (left = qnorm (.025, mean_post2, sd_post2), right = qnorm (.975, mean_post2, sd_post2))
