@@ -1,0 +1,43 @@
+### 5.1
+
+df <- read.csv ('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/mimimizerova/hw5_CA_MCA/hw5_chairs.csv')
+
+MCA <- MASS::mca(df[,-c(1:3)])
+df <- cbind(df, MCA$rs)
+variables <- as_data_frame(MCA$cs)
+variables$var_names <- rownames(MCA$cs)
+df %>% 
+  ggplot(aes(`1`, `2`)) +
+  geom_point(aes(color = Category))+
+  stat_ellipse(aes(color = Category))+
+  geom_text(data = variables, aes(`1`, `2`, label = var_names), size = 3)+
+  theme_bw() +
+  scale_x_continuous(limits = c(-0.015, 0.02))
+
+
+### 5.2
+
+Судя по всему, Stuhl и Sessel - это две разные категории. Конечно, некоторые переменные относятся как к Stuhl, так и к Sessel, но в основном у Stuhl - свой отдельный набор качеств, а у Sessel - свой.
+
+### 5.3
+
+df1 <- read.csv ('https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/students/mimimizerova/hw5_CA_MCA/hw5_colreg.csv')
+
+rownames(df1) <- df1$color
+ca <- ca(df1[-5])
+df1_col <- data.frame(ca$colcoord)
+df1_col$rows <- rownames(ca$colcoord)
+df1_row <- data.frame(ca$rowcoord)
+df1_row$rows <- rownames(ca$rowcoord)
+df1_col %>% 
+  ggplot(aes(Dim1, Dim2, label = rows))+
+  geom_text(color = "blue")+
+  geom_text(data = df1_row, color = "red")+
+  theme_bw()+
+  labs(x = "Dim1 (42.1%)",
+       y = "Dim2 (32.6%)") +
+    scale_x_continuous(limits = c(-2.5, 2.5))
+    
+### 5.4
+
+Из графика можно заметить, что больше всего прилагательных, обозначающих цвет, используется в fiction и presse. Напротив, в устной и академической речи цвета используются гораздо реже. 
